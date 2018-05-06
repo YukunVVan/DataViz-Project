@@ -1,0 +1,33 @@
+.bar {
+  fill: lightgrey;
+  stroke: black;
+}
+
+.bar:hover {
+  fill: steelblue;
+}
+
+.axis {
+  font-family: Helvetica;
+  font-size: 14px;
+}
+
+.axis--x path {
+  display: none;
+}
+
+.axis--y path {
+  display: none;
+}
+
+.grid line {
+  stroke: lightgrey;
+  stroke-opacity: 0.7;
+}
+
+.label {
+  fill: black;
+  font-family: Helvetica;
+  font-size: 14px;
+  text-anchor: middle;
+}
