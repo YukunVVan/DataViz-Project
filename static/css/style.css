@@ -1,3 +1,9 @@
+.wrap {
+    width: 45%;
+    margin: 0 1%;
+    float:left;
+}
+
 .bar {
   fill: lightgrey;
   stroke: black;

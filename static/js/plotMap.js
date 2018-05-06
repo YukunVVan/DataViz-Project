@@ -71,10 +71,12 @@ class DataSelectingForm extends React.Component {
   }
 
   handleClick(event) {
-    var spec = `/normal/${this.state.zipcode}/${this.state.category}/${this.state.fromyear}/${this.state.toyear}`;
+    var spec = `/normal/3/${this.state.zipcode}/${this.state.category}/${this.state.fromyear}/${this.state.toyear}`;
     // vegaEmbed('#vis', spec, {actions:false});
     // event.preventDefault();
     // console.log(this.zip)
+    var line = `/normal/2/${this.state.zipcode}/${this.state.category}/${this.state.fromyear}/${this.state.toyear}`;
+    vegaEmbed('#vis', line);
     fetch(spec, {
         method: 'POST',
         dataType: 'json',
