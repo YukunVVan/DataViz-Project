@@ -2,5 +2,4 @@ Flask
 gunicorn
 pandas
 altair
-json
 psycopg2

@@ -10,7 +10,6 @@ flask = "*"
 gunicorn = "*"
 pandas = "*"
 altair = "*"
-json = "*"
 psycopg2 = "*"
 
 [requires]
