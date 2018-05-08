@@ -18,7 +18,6 @@ class DataSelectingForm extends React.Component {
   }
 
   createBar(g,typedata) {
-
       console.log(typedata)
       var type  = typedata.map(function(d) {return d[0];}),
           count    = typedata.map(function(d) {return d[1];}),

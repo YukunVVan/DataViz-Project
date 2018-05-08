@@ -4,6 +4,27 @@
     float:left;
 }
 
+#map {
+  width: 650px;
+  height: 650px;
+  float: left;
+  display: inline-block;
+}
+
+.zipcode {
+  stroke: black;
+  stroke-width: 1px;
+  fill: none;
+}
+
+.legendbox {
+  background: rgba(255,255,255,0.7);
+  box-shadow: 0 0 15px rgba(0,0,0,0.2);
+  border-radius: 5px;
+  height: 45px;
+  width: 300px;
+}
+
 .bar {
   fill: lightgrey;
   stroke: black;

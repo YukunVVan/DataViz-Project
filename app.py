@@ -56,8 +56,11 @@ def normal(seq,zipcode,category,fromyear,toyear):
     filter = {"incident_z":zipcode,"complaint_":category,"fromyear":fromyear,"toyear":toyear}
     if seq == '1':
         df = getData("incident_z",filter)
+        print(df)
+        return jsonify(df)
     if seq == '2':
         df = getData("year",filter)
+        print(df)
         line = ''
         if df is not None:
             line = alt.Chart(pd.DataFrame(df,columns=['year','count'])).mark_line().encode(
@@ -73,7 +76,7 @@ def normal(seq,zipcode,category,fromyear,toyear):
         )
     if seq == '3':
         df = getData("complaint_",filter)
-        print(df)
+        # print(df)
         return jsonify(df)
 
 
