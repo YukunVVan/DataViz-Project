@@ -53,11 +53,11 @@ def normal(seq,zipcode,category,fromyear,toyear):
     filter = {"incident_z":zipcode,"complaint_":category,"fromyear":fromyear,"toyear":toyear}
     if seq == '1':
         df = getData("incident_z",filter)
-        print(df)
+        # print(df)
         return jsonify(df)
     if seq == '2':
         df = getData("complaint_, SUBSTRING(date, 1, 7)",filter)
-        print(df)
+        # print(df)
         line = ''
         if df is not None:
             # data = "https://raw.githubusercontent.com/lingyielia/TextDataAnalysis/master/casebytwo.csv"

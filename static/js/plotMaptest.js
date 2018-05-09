@@ -8,6 +8,7 @@ class DataSelectingForm extends React.Component {
     super(props);
     // this.g = props.chart;
     this.mapdata = [];
+    this.gmap = null;
     this.state = {
       zipcode: "all",
       category: "all",
@@ -17,7 +18,9 @@ class DataSelectingForm extends React.Component {
 
     this.handleChange = this.handleChange.bind(this);
     this.componentDidUpdate = this.componentDidUpdate.bind(this);
+    this.componentDidMount = this.componentDidMount.bind(this);
     this.createMap = this.createMap.bind(this);
+    this.updateMap = this.updateMap.bind(this);
   }
 
   handleChange(event) {
@@ -27,13 +30,27 @@ class DataSelectingForm extends React.Component {
     });
   }
 
+  updateMap(){
+    var count = this.mapdata;
+    var counts = count.map(d => d[1]),
+        maxCount = d3.max(counts),
+        color    = d3.scaleThreshold()
+                     .domain(d3.range(0, maxCount, maxCount/5))
+                     .range(d3.schemePurples[5]),
+        countbyzip = {};
+
+    count.forEach(function (d) {
+      countbyzip[d[0]] = +d[1];
+    });
+
+    this.gmap.eachLayer(function (layer) {
+      layer.setStyle({fillColor :color(countbyzip[layer.feature.properties.zipcode]),})
+    });
+
+  }
+
   createMap(error,zip){
     var count = this.mapdata;
-    console.log(count);
-    var map = L.map('map').setView([40.7, -73.975], 4);
-
-    L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png', { minZoom: 10 }).addTo(map);
-
     var counts = count.map(d => d[1]),
         maxCount = d3.max(counts),
         color    = d3.scaleThreshold()
@@ -87,10 +104,30 @@ class DataSelectingForm extends React.Component {
         });
     }
 
+    var map = L.map('map').setView([40.7, -73.975], 4);
+    L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png', { minZoom: 10 }).addTo(map);
     var geojson = L.geoJson(zip, {style: style, onEachFeature: onEachFeature}).addTo(map);
-
+    this.gmap = geojson；
 }
 
+  componentDidMount(event) {
+    var line = `/normal/2/${this.state.zipcode}/${this.state.category}/${this.state.fromyear}/${this.state.toyear}`;
+    vegaEmbed('#vis', line);
+
+    var map = `/normal/1/${this.state.zipcode}/${this.state.category}/${this.state.fromyear}/${this.state.toyear}`;
+    fetch(map)
+      .then( r => r.json())
+      .then( r => {
+        this.mapdata=r;
+        d3.queue()
+          .defer(d3.json, ZIPCODE_URL)
+          .await(this.createMap);
+      })
+      .catch(function (error) {
+        console.log('Request failure: ', error);
+      });
+    // console.log(this.mapdata);
+  }
 
   componentDidUpdate(event) {
     var line = `/normal/2/${this.state.zipcode}/${this.state.category}/${this.state.fromyear}/${this.state.toyear}`;
@@ -103,7 +140,7 @@ class DataSelectingForm extends React.Component {
         this.mapdata=r;
         d3.queue()
           .defer(d3.json, ZIPCODE_URL)
-          .await(this.createMap);
+          .await(this.updateMap);
       })
       .catch(function (error) {
         console.log('Request failure: ', error);
