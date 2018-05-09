@@ -153,7 +153,7 @@ class DataSelectingForm extends React.Component {
     return (
         React.createElement("form", {onSubmit: this.handleSubmit},
           React.createElement("label", null,
-            "311 Data Selection   ", React.createElement("br", null),
+            // "311 Data Selection   ", React.createElement("br", null),
             "Zipcode  ",
             React.createElement("select", {
               name: "zipcode",
