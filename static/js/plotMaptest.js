@@ -53,13 +53,21 @@ class DataSelectingForm extends React.Component {
     });
 
     this.gmap.eachLayer(function (layer) {
-      layer.setStyle({fillColor :color(countbyzip[layer.feature.properties.zipcode]),})
+      var c = color(countbyzip[layer.feature.properties.zipcode])
+      var newstyle = {fillColor :c,
+                      weight: 2,
+                      opacity: 1,
+                      color: 'white',
+                      dashArray: '3',
+                      fillOpacity: 0.9};
+      layer.setStyle(newstyle);
+      layer._recordedStyle = newstyle;
     });
 
   }
 
   zoomToFeature(e) {
-      // this.originmap.fitBounds(e.target.getBounds());
+      this.originmap.fitBounds(e.target.getBounds());
       console.log(e.target.feature.properties.zipcode);
       this.setState({
         zipcode: "'"+e.target.feature.properties.zipcode+"'",
@@ -106,7 +114,8 @@ class DataSelectingForm extends React.Component {
     }
 
     function resetHighlight(e) {
-        geojson.resetStyle(e.target);
+        // geojson.resetStyle(e.target);
+        e.target.setStyle(e.target._recordedStyle);
     }
 
     // function zoomToFeature(e) {
@@ -127,6 +136,18 @@ class DataSelectingForm extends React.Component {
     this.originmap = map;
     L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png', { minZoom: 10 }).addTo(map);
     var geojson = L.geoJson(zip, {style: style, onEachFeature: onEachFeature}).addTo(map);
+    geojson.eachLayer(function (layer) {
+      // var c = color(countbyzip[layer.feature.properties.zipcode])
+      // var newstyle = {fillColor :c,
+      //                 weight: 2,
+      //                 opacity: 1,
+      //                 color: 'white',
+      //                 dashArray: '3',
+      //                 fillOpacity: 0.9};
+      // layer.setStyle(newstyle);
+      layer._recordedStyle = style(layer.feature);
+    });
+
     this.gmap = geojson;
 }
 

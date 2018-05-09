@@ -55,6 +55,8 @@ def normal(seq,zipcode,category,fromyear,toyear):
     # print(f)
     filter = {"incident_z":zipcode,"complaint_":category,"fromyear":fromyear,"toyear":toyear}
     if seq == '1':
+        if zipcode != 'gen1':
+            filter["incident_z"] = "all"
         df = getData("incident_z",filter)
         # print(df)
         return jsonify(df)
