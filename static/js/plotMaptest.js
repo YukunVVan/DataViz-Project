@@ -154,8 +154,7 @@ class DataSelectingForm extends React.Component {
     //   .catch(function (error) {
     //     console.log('Request failure: ', error);
     //   });
-    // var baseMap = this.createBaseMap();
-    // console.log(baseMap);
+
 
     var map = `/normal/1/${this.state.zipcode}/${this.state.category}/${this.state.fromyear}/${this.state.toyear}`;
     fetch(map)

@@ -14,9 +14,6 @@ def getData(by,filter):
     user = "teamwonder"
     password = "visproject"
 
-    if by == 'year':
-        by = "SUBSTRING(date, 1, 7)"
-
     qfilter = []
     for f in filter:
         if filter[f] == 'all':
@@ -59,15 +56,34 @@ def normal(seq,zipcode,category,fromyear,toyear):
         print(df)
         return jsonify(df)
     if seq == '2':
-        df = getData("year",filter)
+        df = getData("complaint_, SUBSTRING(date, 1, 7)",filter)
         print(df)
         line = ''
         if df is not None:
-            line = alt.Chart(pd.DataFrame(df,columns=['year','count'])).mark_line().encode(
-                x='year',
-                y='count'
-            ).to_json()
-        return Response(line,
+            # data = "https://raw.githubusercontent.com/lingyielia/TextDataAnalysis/master/casebytwo.csv"
+            data = pd.DataFrame(df,columns=['type','date','count'])
+
+            highlight = alt.selection(type='single', on='mouseover',
+                          fields=['type'], nearest=True)
+
+            base = alt.Chart(data).encode(
+                x='date:T',
+                y='count:Q',
+                color='type:N'
+            )
+
+            points = base.mark_circle().encode(
+                opacity=alt.value(0)
+            ).properties(
+                selection=highlight,
+                width=400
+            )
+
+            lines = base.mark_line().encode(
+                size=alt.condition(~highlight, alt.value(1), alt.value(3))
+            )
+
+        return Response((points+lines).to_json(),
             mimetype='application/json',
             headers={
                 'Cache-Control': 'no-cache',
