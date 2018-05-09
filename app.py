@@ -24,6 +24,9 @@ def getData(by,filter):
         if f == "toyear":
             qfilter.append("date < "+str(filter[f]))
             continue
+        if f == "incident_z" and filter[f] == "gen1":
+            qfilter.append("(incident_z = '10001' OR incident_z = '10002' OR incident_z = '11201')")
+            continue
         qfilter.append(str(f)+' = '+str(filter[f]))
 
     if qfilter:
@@ -94,11 +97,13 @@ def normal(seq,zipcode,category,fromyear,toyear):
         df = getData("complaint_",filter)
         # print(df)
         return jsonify(df)
+    #
+    # if seq == '4':
+    #     #
 
 
 
 # def line(zipcode,category,fromyear,toyear):
-
 
 if __name__ == '__main__':
    app.run(debug = True)

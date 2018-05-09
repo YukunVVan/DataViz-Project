@@ -9,6 +9,7 @@ class DataSelectingForm extends React.Component {
     // this.g = props.chart;
     this.mapdata = [];
     this.gmap = null;
+    this.originmap = null;
     this.state = {
       zipcode: "all",
       category: "all",
@@ -17,16 +18,24 @@ class DataSelectingForm extends React.Component {
     };
 
     this.handleChange = this.handleChange.bind(this);
+    this.handleClick = this.handleClick.bind(this);
     this.componentDidUpdate = this.componentDidUpdate.bind(this);
     this.componentDidMount = this.componentDidMount.bind(this);
     this.createMap = this.createMap.bind(this);
     this.updateMap = this.updateMap.bind(this);
+    this.zoomToFeature = this.zoomToFeature.bind(this);
   }
 
   handleChange(event) {
     // console.log('change!')
     this.setState({
       [event.target.name]: event.target.value
+    });
+  }
+
+  handleClick(e) {
+    this.setState({
+      zipcode: "gen1",
     });
   }
 
@@ -47,6 +56,14 @@ class DataSelectingForm extends React.Component {
       layer.setStyle({fillColor :color(countbyzip[layer.feature.properties.zipcode]),})
     });
 
+  }
+
+  zoomToFeature(e) {
+      // this.originmap.fitBounds(e.target.getBounds());
+      console.log(e.target.feature.properties.zipcode);
+      this.setState({
+        zipcode: "'"+e.target.feature.properties.zipcode+"'",
+      });
   }
 
   createMap(error,zip){
@@ -78,9 +95,9 @@ class DataSelectingForm extends React.Component {
 
         layer.setStyle({
             weight: 5,
-            color: '#666',
+            // color: '#666',
             dashArray: '',
-            fillOpacity: 0.7
+            fillOpacity: 0.8
         });
 
         if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
@@ -92,9 +109,11 @@ class DataSelectingForm extends React.Component {
         geojson.resetStyle(e.target);
     }
 
-    function zoomToFeature(e) {
-        map.fitBounds(e.target.getBounds());
-    }
+    // function zoomToFeature(e) {
+    //     map.fitBounds(e.target.getBounds());
+    //     console.log(e.target.feature.properties.zipcode);
+    // }
+    var zoomToFeature = this.zoomToFeature
 
     function onEachFeature(feature, layer) {
         layer.on({
@@ -105,6 +124,7 @@ class DataSelectingForm extends React.Component {
     }
 
     var map = L.map('map').setView([40.7, -73.975], 4);
+    this.originmap = map;
     L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png', { minZoom: 10 }).addTo(map);
     var geojson = L.geoJson(zip, {style: style, onEachFeature: onEachFeature}).addTo(map);
     this.gmap = geojson;
@@ -203,7 +223,11 @@ class DataSelectingForm extends React.Component {
               React.createElement("option", {value: "'2018'"}, "2018")
             ),
             "   "
-          )
+          ),
+          React.createElement("input", {type: "button",
+            value: "Search",
+            onClick: this.handleClick}
+          ),
       )
     );
   }
