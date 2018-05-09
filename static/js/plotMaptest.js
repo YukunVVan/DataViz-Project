@@ -1,13 +1,12 @@
-const svg = d3.select("svg");
-const gChart = svg.append("g");
+// const svg = d3.select("svg");
+// const gChart = svg.append("g");
 
 const ZIPCODE_URL = "https://raw.githubusercontent.com/lingyielia/D3-visual/master/data/nyc_zip.geojson";
-const count_url = "https://raw.githubusercontent.com/YukunVVan/DataViz-Project/master/DataPreprocess/defalt/casebyzip.json?token=AefhM2qQI6hcXfR-MdLqH2MW0YjflTl7ks5a93-mwA%3D%3D";
 
 class DataSelectingForm extends React.Component {
   constructor(props) {
     super(props);
-    this.g = props.chart;
+    // this.g = props.chart;
     this.mapdata = [];
     this.state = {
       zipcode: "all",
@@ -18,10 +17,7 @@ class DataSelectingForm extends React.Component {
 
     this.handleChange = this.handleChange.bind(this);
     this.componentDidUpdate = this.componentDidUpdate.bind(this);
-    // this.createBaseMap = this.createBaseMap.bind(this);
     this.createMap = this.createMap.bind(this);
-    // this.updateMap = this.updateMap.bind(this);
-    // this.reproject = this.reproject.bind(this);
   }
 
   handleChange(event) {
@@ -29,52 +25,6 @@ class DataSelectingForm extends React.Component {
     this.setState({
       [event.target.name]: event.target.value
     });
-  }
-
-  createBar(g,typedata) {
-      // console.log(typedata)
-      var type  = typedata.map(function(d) {return d[0];}),
-          count    = typedata.map(function(d) {return d[1];}),
-          maxValue = d3.max(count);
-
-      var w = d3.scaleLinear()
-        .domain([0, maxValue])
-        .rangeRound([0, 300]);
-
-      g.selectAll(".mark")
-        .data(count)
-        .enter()
-          .append('rect')
-          .attr('class', 'mark')
-          .attr('x', 120)
-          .attr('y', function(d,i) {return 50+i*24;})
-          .attr('width', function(d,i) {return w(d);})
-          .attr('height', 22)
-          .attr('fill','lightgrey');
-
-      var xAxis = d3.axisBottom()
-                    .scale(w)
-                    .ticks(5);
-
-      g.append("g")
-       .attr("class", "x-axis")
-       .attr("transform", "translate(120,170)")
-       .call(xAxis)
-       .append("text")
-        .attr("class", "label")
-        .style("text-anchor", "middle")
-        .attr("transform","translate(100,40)")
-        .text("Complaints by Type");
-
-      var y = d3.scalePoint().domain(type).range([0,100]);
-
-      var yAxis = d3.axisLeft()
-                    .scale(y);
-
-      g.append("g")
-       .attr("class", "y-axis")
-       .attr("transform", "translate(116,60)")
-       .call(yAxis);
   }
 
   createMap(error,zip){
@@ -143,18 +93,8 @@ class DataSelectingForm extends React.Component {
 
 
   componentDidUpdate(event) {
-    // console.log('update!')
     var line = `/normal/2/${this.state.zipcode}/${this.state.category}/${this.state.fromyear}/${this.state.toyear}`;
     vegaEmbed('#vis', line);
-
-    // var spec = `/normal/3/${this.state.zipcode}/${this.state.category}/${this.state.fromyear}/${this.state.toyear}`;
-    // fetch(spec)
-    //   .then( r => r.json())
-    //   .then( r => this.createBar(this.g,r))
-    //   .catch(function (error) {
-    //     console.log('Request failure: ', error);
-    //   });
-
 
     var map = `/normal/1/${this.state.zipcode}/${this.state.category}/${this.state.fromyear}/${this.state.toyear}`;
     fetch(map)
@@ -232,10 +172,9 @@ class DataSelectingForm extends React.Component {
   }
 }
 
-
 ReactDOM.render(
   React.createElement("div", null,
-    React.createElement(DataSelectingForm, {chart: gChart})
+    React.createElement(DataSelectingForm)
   ),
   document.getElementById('ui')
 );
