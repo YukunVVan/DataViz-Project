@@ -107,7 +107,7 @@ class DataSelectingForm extends React.Component {
     var map = L.map('map').setView([40.7, -73.975], 4);
     L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png', { minZoom: 10 }).addTo(map);
     var geojson = L.geoJson(zip, {style: style, onEachFeature: onEachFeature}).addTo(map);
-    this.gmap = geojson；
+    this.gmap = geojson;
 }
 
   componentDidMount(event) {
