@@ -141,7 +141,7 @@ def normal(seq,zipcode,category,fromyear,toyear):
 
 @app.route('/circle/<radius>/<lat>/<lng>/<category>/<fromyear>/<toyear>',methods=['GET', 'POST'])
 def circle(radius,lat,lng,category,fromyear,toyear):
-    geo = "ST_DWithin(the_geom,ST_GeomFromText('Point(" + lat + " " + lng + ")', 4326)," + radius + ")"
+    geo = "ST_DWithin(the_geom::geography, ST_SetSRID(ST_Point(" + lng + ", " + lat + "),4326)::geography, " + radius + ")"
     filter = {"geo":geo,"complaint_":category,"fromyear":fromyear,"toyear":toyear}
     df = getData("complaint_, SUBSTRING(date, 1, 7)",filter)
     print(df[:5])

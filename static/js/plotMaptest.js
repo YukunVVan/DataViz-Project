@@ -23,6 +23,7 @@ class DataSelectingForm extends React.Component {
     };
 
     this.handleChange = this.handleChange.bind(this);
+    this.handleClick = this.handleClick.bind(this);
     this.handleClick_ge = this.handleClick_ge.bind(this);
     this.handleClick_ng = this.handleClick_ng.bind(this);
     this.handleClick_hi = this.handleClick_hi.bind(this);
@@ -39,6 +40,18 @@ class DataSelectingForm extends React.Component {
   handleChange(event) {
     this.setState({
       [event.target.name]: event.target.value
+    });
+  }
+
+  handleClick(e) {
+    this.setState({
+      zipcode: "all",
+      category: "all",
+      fromyear: "all",
+      toyear: "all",
+      radius:0,
+      lat:0,
+      lng:0,
     });
   }
 
@@ -106,7 +119,7 @@ class DataSelectingForm extends React.Component {
   }
 
   zoomToFeature(e) {
-      this.originmap.fitBounds(e.target.getBounds());
+      // this.originmap.fitBounds(e.target.getBounds());
       console.log(e.target.feature.properties.zipcode);
       this.setState({
         zipcode: "'"+e.target.feature.properties.zipcode+"'",
@@ -335,6 +348,7 @@ class DataSelectingForm extends React.Component {
         console.log('Request failure: ', error);
       });
     // console.log(this.mapdata);
+
   }
 
   componentDidUpdate(event) {
@@ -362,21 +376,17 @@ class DataSelectingForm extends React.Component {
         });
       console.log(this.mapdata);
     }
+
   }
 
   render() {
     return (
         React.createElement("form", {onSubmit: this.handleSubmit},
           React.createElement("label", null,
-            // "311 Data Selection   ", React.createElement("br", null),
-            "Zipcode  ",
-            React.createElement("select", {
-              name: "zipcode",
-              value: this.state.zipcode,
-              onChange: this.handleChange},
-              React.createElement("option", {value: "all"}, ""),
-              React.createElement("option", {value: "'10001'"}, "10001"),
-              React.createElement("option", {value: "'10002'"}, "10002")
+            "   ",
+            React.createElement("input", {type: "button",
+              value: "Reset to Default",
+              onClick: this.handleClick}
             ),
             "   " + ' ' +
             "Category  ",
