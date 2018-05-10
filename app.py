@@ -80,42 +80,12 @@ def c3data(df):
     jsonstyle['date'] = ['x'] + dftemp['date'].tolist()
     for i in range(1,len(dftemp.columns)):
         jsonstyle[dftemp.columns[i]] = [dftemp.columns[i]] + dftemp[dftemp.columns[i]].tolist()
-    # jsonstyle = []
-    # jsonstyle.append(['x'] + dftemp['date'].tolist())
-    # for i in range(1,len(dftemp.columns)):
-    #     jsonstyle.append([dftemp.columns[i]] + dftemp[dftemp.columns[i]].tolist())
+
     return jsonstyle
-
-# def vega(df):
-#     data = pd.DataFrame(df,columns=['type','date','count'])
-#
-#     highlight = alt.selection(type='single', on='mouseover',
-#                   fields=['type'], nearest=True)
-#
-#     base = alt.Chart(data).encode(
-#         x='date:T',
-#         y='count:Q',
-#         color='type:N'
-#     )
-#
-#     points = base.mark_circle().encode(
-#         opacity=alt.value(0)
-#     ).properties(
-#         selection=highlight,
-#         width=400
-#     )
-#
-#     lines = base.mark_line().encode(
-#         size=alt.condition(~highlight, alt.value(1), alt.value(3))
-#     )
-#
-#     return (points+lines).to_json()
-
 
 @app.route('/normal/<seq>/<zipcode>/<category>/<fromyear>/<toyear>',methods=['GET', 'POST'])
 def normal(seq,zipcode,category,fromyear,toyear):
-    # f = request.get_json(force=True)
-    # print(f)
+
     filter = {"incident_z":zipcode,"complaint_":category,"fromyear":fromyear,"toyear":toyear}
     if seq == '1':
         if zipcode not in set(['gen_ge','gen_ng','gen_hi']):
@@ -124,51 +94,24 @@ def normal(seq,zipcode,category,fromyear,toyear):
         # print(df)
         return jsonify(df)
     if seq == '2':
+        if category != 'all':
+            filter["complaint_"] = "all"
         df = getData("complaint_, SUBSTRING(date, 1, 7)",filter)
-        print(df[:5])
+        # print(df[:5])
         d = c3data(df)
-        print(d)
+        # print(d)
         return jsonify(d)
-        # print(df)
-        # line = ''
-        # if df is not None:
-        #     # data = "https://raw.githubusercontent.com/lingyielia/TextDataAnalysis/master/casebytwo.csv"
-        #     line = c3data(df)
-        #
-        # return Response(line,
-        #     mimetype='application/json',
-        #     headers={
-        #         'Cache-Control': 'no-cache',
-        #         'Access-Control-Allow-Origin': '*'
-        #     }
-        # )
-    # if seq == '3':
-    #     df = getData("complaint_",filter)
-    #     # print(df)
-    #     return jsonify(df)
-    #
-    # if seq == '4':
-    #     #
 
 @app.route('/circle/<radius>/<lat>/<lng>/<category>/<fromyear>/<toyear>',methods=['GET', 'POST'])
 def circle(radius,lat,lng,category,fromyear,toyear):
     geo = "ST_DWithin(the_geom::geography, ST_SetSRID(ST_Point(" + lng + ", " + lat + "),4326)::geography, " + radius + ")"
     filter = {"geo":geo,"complaint_":category,"fromyear":fromyear,"toyear":toyear}
     df = getData("complaint_, SUBSTRING(date, 1, 7)",filter)
-    print(df[:5])
-    return c3data(df)
-    # line = ''
-    # if df is not None:
-    #     line = c3data(df)
-    #
-    # return Response(line,
-    #     mimetype='application/json',
-    #     headers={
-    #         'Cache-Control': 'no-cache',
-    #         'Access-Control-Allow-Origin': '*'
-    #     }
-    # )
-# def line(zipcode,category,fromyear,toyear):
+    # print(df[:5])
+    d = c3data(df)
+    # print(d)
+    return jsonify(d)
+
 
 if __name__ == '__main__':
    app.run(debug = True)
