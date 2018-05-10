@@ -18,7 +18,9 @@ class DataSelectingForm extends React.Component {
     };
 
     this.handleChange = this.handleChange.bind(this);
-    this.handleClick = this.handleClick.bind(this);
+    this.handleClick_ge = this.handleClick_ge.bind(this);
+    this.handleClick_ng = this.handleClick_ng.bind(this);
+    this.handleClick_hi = this.handleClick_hi.bind(this);
     this.componentDidUpdate = this.componentDidUpdate.bind(this);
     this.componentDidMount = this.componentDidMount.bind(this);
     this.createMap = this.createMap.bind(this);
@@ -33,9 +35,21 @@ class DataSelectingForm extends React.Component {
     });
   }
 
-  handleClick(e) {
+  handleClick_ge(e) {
     this.setState({
-      zipcode: "gen1",
+      zipcode: "gen_ge",
+    });
+  }
+
+  handleClick_ng(e) {
+    this.setState({
+      zipcode: "gen_ng",
+    });
+  }
+
+  handleClick_hi(e) {
+    this.setState({
+      zipcode: "gen_hi",
     });
   }
 
@@ -243,12 +257,22 @@ class DataSelectingForm extends React.Component {
               React.createElement("option", {value: "'2017'"}, "2017"),
               React.createElement("option", {value: "'2018'"}, "2018")
             ),
-            "   "
-          ),
-          React.createElement("input", {type: "button",
-            value: "Search",
-            onClick: this.handleClick}
-          ),
+            "   ",
+            React.createElement("input", {type: "button",
+              value: "Gentrifying",
+              onClick: this.handleClick_ge}
+            ),
+            "   ",
+            React.createElement("input", {type: "button",
+              value: "Non-Gentrifying",
+              onClick: this.handleClick_ng}
+            ),
+            "   ",
+            React.createElement("input", {type: "button",
+              value: "Higher-Income",
+              onClick: this.handleClick_hi}
+            ),
+          )
       )
     );
   }

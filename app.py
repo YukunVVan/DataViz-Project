@@ -14,6 +14,11 @@ def getData(by,filter):
     user = "teamwonder"
     password = "visproject"
 
+    Gentrifying = [10002,10003,10009,10026,10027,10029,10030,10031,10032,10033,10034,10035,10037,10039,10040,10454,10455,10456,10457,10458,10459,10460,10474,11102,11103,11105,11106,11206,11211,11212,11213,11216,11220,11221,11222,11225,11232,11233,11237,11249,11370]
+    Non_Gentrifying = [10451,10452,10453,10463,10468,10472,10473,11204,11208,11214,11223,11224,11239]
+    Higher_Income = [11414,11415,11416,11417,11418,11419,11420,11421,11422,11423,11426,11427,11428,11429,11430,11432,11433,11434,11435,11436,11530,11691,11692,11693,11694,11695,11697]
+
+
     qfilter = []
     for f in filter:
         if filter[f] == 'all':
@@ -24,8 +29,29 @@ def getData(by,filter):
         if f == "toyear":
             qfilter.append("date < "+str(filter[f]))
             continue
-        if f == "incident_z" and filter[f] == "gen1":
-            qfilter.append("(incident_z = '10001' OR incident_z = '10002' OR incident_z = '11201')")
+        if f == "incident_z" and filter[f] == "gen_ge":
+            str_ge = "("
+            for i in Gentrifying:
+                str_ge = str_ge + "incident_z = '" + str(i) + "' OR "
+            str_ge = str_ge[:-4] + ")"
+            print(str_ge)
+            qfilter.append(str_ge)
+            continue
+        if f == "incident_z" and filter[f] == "gen_ng":
+            str_ng = "("
+            for i in Non_Gentrifying:
+                str_ng = str_ng + "incident_z = '" + str(i) + "' OR "
+            str_ng = str_ng[:-4] + ")"
+            print(str_ng)
+            qfilter.append(str_ng)
+            continue
+        if f == "incident_z" and filter[f] == "gen_hi":
+            str_hi = "("
+            for i in Higher_Income:
+                str_hi = str_hi + "incident_z = '" + str(i) + "' OR "
+            str_hi = str_hi[:-4] + ")"
+            print(str_hi)
+            qfilter.append(str_hi)
             continue
         qfilter.append(str(f)+' = '+str(filter[f]))
 
