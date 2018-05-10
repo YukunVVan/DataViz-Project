@@ -53,6 +53,9 @@ def getData(by,filter):
             #print(str_hi)
             qfilter.append(str_hi)
             continue
+        if f == "geo":
+            qfilter.append(filter[f])
+            continue
         qfilter.append(str(f)+' = '+str(filter[f]))
 
     if qfilter:
@@ -75,6 +78,32 @@ def getData(by,filter):
 def index():
     return render_template('index.html')
 
+def vega(df):
+    data = pd.DataFrame(df,columns=['type','date','count'])
+
+    highlight = alt.selection(type='single', on='mouseover',
+                  fields=['type'], nearest=True)
+
+    base = alt.Chart(data).encode(
+        x='date:T',
+        y='count:Q',
+        color='type:N'
+    )
+
+    points = base.mark_circle().encode(
+        opacity=alt.value(0)
+    ).properties(
+        selection=highlight,
+        width=400
+    )
+
+    lines = base.mark_line().encode(
+        size=alt.condition(~highlight, alt.value(1), alt.value(3))
+    )
+
+    return (points+lines).to_json()
+
+
 @app.route('/normal/<seq>/<zipcode>/<category>/<fromyear>/<toyear>',methods=['GET', 'POST'])
 def normal(seq,zipcode,category,fromyear,toyear):
     # f = request.get_json(force=True)
@@ -88,49 +117,45 @@ def normal(seq,zipcode,category,fromyear,toyear):
         return jsonify(df)
     if seq == '2':
         df = getData("complaint_, SUBSTRING(date, 1, 7)",filter)
+        print(df[:5])
         # print(df)
         line = ''
         if df is not None:
             # data = "https://raw.githubusercontent.com/lingyielia/TextDataAnalysis/master/casebytwo.csv"
-            data = pd.DataFrame(df,columns=['type','date','count'])
+            line = vega(df)
 
-            highlight = alt.selection(type='single', on='mouseover',
-                          fields=['type'], nearest=True)
-
-            base = alt.Chart(data).encode(
-                x='date:T',
-                y='count:Q',
-                color='type:N'
-            )
-
-            points = base.mark_circle().encode(
-                opacity=alt.value(0)
-            ).properties(
-                selection=highlight,
-                width=400
-            )
-
-            lines = base.mark_line().encode(
-                size=alt.condition(~highlight, alt.value(1), alt.value(3))
-            )
-
-        return Response((points+lines).to_json(),
+        return Response(line,
             mimetype='application/json',
             headers={
                 'Cache-Control': 'no-cache',
                 'Access-Control-Allow-Origin': '*'
             }
         )
-    if seq == '3':
-        df = getData("complaint_",filter)
-        # print(df)
-        return jsonify(df)
+    # if seq == '3':
+    #     df = getData("complaint_",filter)
+    #     # print(df)
+    #     return jsonify(df)
     #
     # if seq == '4':
     #     #
 
+@app.route('/circle/<radius>/<lat>/<lng>/<category>/<fromyear>/<toyear>',methods=['GET', 'POST'])
+def circle(radius,lat,lng,category,fromyear,toyear):
+    geo = "ST_DWithin(the_geom,ST_GeomFromText('Point(" + lat + " " + lng + ")', 4326)," + radius + ")"
+    filter = {"geo":geo,"complaint_":category,"fromyear":fromyear,"toyear":toyear}
+    df = getData("complaint_, SUBSTRING(date, 1, 7)",filter)
+    print(df[:5])
+    line = ''
+    if df is not None:
+        line = vega(df)
 
-
+    return Response(line,
+        mimetype='application/json',
+        headers={
+            'Cache-Control': 'no-cache',
+            'Access-Control-Allow-Origin': '*'
+        }
+    )
 # def line(zipcode,category,fromyear,toyear):
 
 if __name__ == '__main__':

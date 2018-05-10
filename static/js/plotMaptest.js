@@ -10,11 +10,16 @@ class DataSelectingForm extends React.Component {
     this.mapdata = [];
     this.gmap = null;
     this.originmap = null;
+    this.circle = null;
+    this.circleUpdated = false;
     this.state = {
       zipcode: "all",
       category: "all",
       fromyear: "all",
       toyear: "all",
+      radius:0,
+      lat:0,
+      lng:0,
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -26,10 +31,12 @@ class DataSelectingForm extends React.Component {
     this.createMap = this.createMap.bind(this);
     this.updateMap = this.updateMap.bind(this);
     this.zoomToFeature = this.zoomToFeature.bind(this);
+    this.setupSelectionHandlers = this.setupSelectionHandlers.bind(this);
+    this.circleSelection = this.circleSelection.bind(this);
+    this.updateQueryStatus = this.updateQueryStatus.bind(this);
   }
 
   handleChange(event) {
-    // console.log('change!')
     this.setState({
       [event.target.name]: event.target.value
     });
@@ -62,6 +69,25 @@ class DataSelectingForm extends React.Component {
                      .range(d3.schemePurples[5]),
         countbyzip = {};
 
+        var x        = d3.scaleLinear()
+                         .domain([0, maxCount])
+                         .rangeRound([50, 300]),
+            legend   = d3.select(".legend");
+
+        var boxes = legend.selectAll("rect")
+                          .data(color.range().map(function(d) {
+                             d = color.invertExtent(d);
+                             return [(d[0]!==null?d[0]:x.domain()[0]),
+                                     (d[1]!==null?d[1]:x.domain()[1])];
+                           }));
+        // console.log(boxes)
+        boxes.enter().append("rect")
+             .merge(boxes)
+               .attr("height", 6)
+               .attr("x", d => x(d[0]))
+               .attr("width", d => (x(d[1]) - x(d[0])))
+               .attr("fill", d => 'Purple');
+
     count.forEach(function (d) {
       countbyzip[d[0]] = +d[1];
     });
@@ -77,7 +103,6 @@ class DataSelectingForm extends React.Component {
       layer.setStyle(newstyle);
       layer._recordedStyle = newstyle;
     });
-
   }
 
   zoomToFeature(e) {
@@ -86,6 +111,69 @@ class DataSelectingForm extends React.Component {
       this.setState({
         zipcode: "'"+e.target.feature.properties.zipcode+"'",
       });
+  }
+
+  circleSelection(){
+    // console.log("circleSelection",this.circleUpdated);
+    if (this.circleUpdated) {
+      this.setState({
+          radius : this.circle.getRadius(),
+          lat    : this.circle.getLatLng().lat.toFixed(4),
+          lng    : this.circle.getLatLng().lng.toFixed(4),});
+    }
+  }
+
+  updateQueryStatus(){
+    this.circleUpdated = true;
+    var circle = this.circle;
+    // console.log(circle,this.circle)
+    var infoBox = d3.select(".infobox.leaflet-control");
+    let radius  = L.GeometryUtil.readableDistance(circle.getRadius(), true),
+        lat     = circle.getLatLng().lat.toFixed(4),
+        lng     = circle.getLatLng().lng.toFixed(4),
+        caption = `<table style='width:100%'>
+                   <tr><th>Coords</th><td>${lat},${lng}</td></tr>
+                   <tr><th>Radius</th><td>${radius}</td></tr>
+                   </table>`;
+    infoBox.html(caption);
+  }
+
+  setupSelectionHandlers() {
+    var dMap = this.originmap;
+    var circle = this.circle;
+    // console.log(this.circle)
+    var infoBox = d3.select(".infobox.leaflet-control");
+    var updateQuery = this.circleSelection;
+    var updateQueryStatus = this.updateQueryStatus;
+    dMap.on(L.Draw.Event.EDITMOVE, updateQueryStatus);
+    dMap.on(L.Draw.Event.EDITRESIZE, updateQueryStatus);
+    dMap.on('mouseup', updateQuery);
+
+    // let circleUpdated = true;
+    // this.updateQueryStatus(null);
+    let radius  = L.GeometryUtil.readableDistance(circle.getRadius(), true),
+        lat     = circle.getLatLng().lat.toFixed(4),
+        lng     = circle.getLatLng().lng.toFixed(4),
+        caption = `<table style='width:100%'>
+                   <tr><th>Coords</th><td>${lat},${lng}</td></tr>
+                   <tr><th>Radius</th><td>${radius}</td></tr>
+                   </table>`;
+    infoBox.html(caption);
+    // function updateQueryStatus(e) {
+    //   this.circleUpdated = true;
+    //   updateCaption();
+    // }
+
+    // function updateCaption() {
+    //   let radius  = L.GeometryUtil.readableDistance(circle.getRadius(), true),
+    //       lat     = circle.getLatLng().lat.toFixed(4),
+    //       lng     = circle.getLatLng().lng.toFixed(4),
+    //       caption = `<table style='width:100%'>
+    //                  <tr><th>Coords</th><td>${lat},${lng}</td></tr>
+    //                  <tr><th>Radius</th><td>${radius}</td></tr>
+    //                  </table>`;
+    //   infoBox.html(caption);
+    // }
   }
 
   createMap(error,zip){
@@ -128,14 +216,9 @@ class DataSelectingForm extends React.Component {
     }
 
     function resetHighlight(e) {
-        // geojson.resetStyle(e.target);
         e.target.setStyle(e.target._recordedStyle);
     }
 
-    // function zoomToFeature(e) {
-    //     map.fitBounds(e.target.getBounds());
-    //     console.log(e.target.feature.properties.zipcode);
-    // }
     var zoomToFeature = this.zoomToFeature
 
     function onEachFeature(feature, layer) {
@@ -146,20 +229,89 @@ class DataSelectingForm extends React.Component {
         });
     }
 
-    var map = L.map('map').setView([40.7, -73.975], 4);
-    this.originmap = map;
-    L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png', { minZoom: 10 }).addTo(map);
-    // L.circle([40.692908,-73.9896452], 1000, options={editable: true}).addTo(map);
-    var geojson = L.geoJson(zip, {style: style, onEachFeature: onEachFeature}).addTo(map);
+    var center    = [40.7, -73.975],
+        cusp      = [40.692908,-73.9896452],
+        baseLight = L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png',
+                                { maxZoom: 18, }),
+        baseDark  = L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png',
+                                { maxZoom: 18, }),
+        circle    = L.circle(cusp, 1000, {editable: true}),
+        dMap      = L.map('map', {
+                      center: center,
+                      zoom: 10.5,
+                      layers: [baseLight]
+                    }),
+        svg       = d3.select(dMap.getPanes().overlayPane).append("svg"),
+  			g         = svg.append("g").attr("class", "leaflet-zoom-hide");
+
+    L.control.layers({"Light": baseLight,"Dark" : baseDark,},
+                     {"Selection": circle,}).addTo(dMap);
+
+    let infoBox = L.control({position: 'bottomleft'});
+    infoBox.onAdd = function (map) {var div = L.DomUtil.create('div', 'infobox'); return div;}
+    infoBox.addTo(dMap);
+
+    let legendControl   = L.control({position: 'topleft'});
+
+    // On adding the legend to LeafLet, we will setup a <div> to show
+    // the selection information.
+    legendControl.onAdd = addLegendToMap;
+    legendControl.addTo(dMap);
+
+    function addLegendToMap(map) {
+      let div    = L.DomUtil.create('div', 'legendbox'),
+          ndiv   = d3.select(div)
+                     .style("left", "50px")
+                     .style("top", "-75px"),
+          lsvg   = ndiv.append("svg"),
+          legend = lsvg.append("g")
+                     .attr("class", "legend")
+                     .attr("transform", "translate(0, 20)");
+      legend.append("text")
+        .attr("class", "axis--map--caption")
+        .attr("y", -6);
+      return div;
+    };
+
+    var x        = d3.scaleLinear()
+                     .domain([0, maxCount])
+                     .rangeRound([50, 300]),
+        legend   = d3.select(".legend");
+
+    var boxes = legend.selectAll("rect")
+                      .data(color.range().map(function(d) {
+                         d = color.invertExtent(d);
+                         return [(d[0]!==null?d[0]:x.domain()[0]),
+                                 (d[1]!==null?d[1]:x.domain()[1])];
+                       }));
+    // console.log(boxes)
+    boxes.enter().append("rect")
+         .merge(boxes)
+           .attr("height", 6)
+           .attr("x", d => x(d[0]))
+           .attr("width", d => (x(d[1]) - x(d[0])))
+           .attr("fill", d => 'Purple');
+
+    legend.call(d3.axisBottom(x)
+     .ticks(5, "s")
+     .tickSize(10,0)
+     .tickValues(color.domain()))
+    .select(".domain")
+     .remove();
+
+    legend.select(".axis--map--caption")
+    .attr("x", x.range()[0])
+    .text("Number of 311 Incidents");
+
+    // var map = L.map('map').setView([40.7, -73.975], 4);
+    this.originmap = dMap;
+    this.circle = circle;
+    // console.log(this.circle,circle);
+    this.setupSelectionHandlers();
+
+    // L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png', { minZoom: 10 }).addTo(map);
+    var geojson = L.geoJson(zip, {style: style, onEachFeature: onEachFeature}).addTo(dMap);
     geojson.eachLayer(function (layer) {
-      // var c = color(countbyzip[layer.feature.properties.zipcode])
-      // var newstyle = {fillColor :c,
-      //                 weight: 2,
-      //                 opacity: 1,
-      //                 color: 'white',
-      //                 dashArray: '3',
-      //                 fillOpacity: 0.9};
-      // layer.setStyle(newstyle);
       layer._recordedStyle = style(layer.feature);
     });
 
@@ -186,23 +338,30 @@ class DataSelectingForm extends React.Component {
   }
 
   componentDidUpdate(event) {
-    var line = `/normal/2/${this.state.zipcode}/${this.state.category}/${this.state.fromyear}/${this.state.toyear}`;
-    vegaEmbed('#vis', line);
+    if (this.circleUpdated) {
+      console.log('update!')
+      var line = `/circle/${this.state.radius}/${this.state.lat}/${this.state.lng}/${this.state.category}/${this.state.fromyear}/${this.state.toyear}`;
+      vegaEmbed('#vis', line);
+      this.circleUpdated = false;
+    }
+    else{
+      var line = `/normal/2/${this.state.zipcode}/${this.state.category}/${this.state.fromyear}/${this.state.toyear}`;
+      vegaEmbed('#vis', line);
 
-    var map = `/normal/1/${this.state.zipcode}/${this.state.category}/${this.state.fromyear}/${this.state.toyear}`;
-    fetch(map)
-      .then( r => r.json())
-      .then( r => {
-        this.mapdata=r;
-        d3.queue()
-          .defer(d3.json, ZIPCODE_URL)
-          .await(this.updateMap);
-      })
-      .catch(function (error) {
-        console.log('Request failure: ', error);
-      });
-    console.log(this.mapdata);
-
+      var map = `/normal/1/${this.state.zipcode}/${this.state.category}/${this.state.fromyear}/${this.state.toyear}`;
+      fetch(map)
+        .then( r => r.json())
+        .then( r => {
+          this.mapdata=r;
+          d3.queue()
+            .defer(d3.json, ZIPCODE_URL)
+            .await(this.updateMap);
+        })
+        .catch(function (error) {
+          console.log('Request failure: ', error);
+        });
+      console.log(this.mapdata);
+    }
   }
 
   render() {
