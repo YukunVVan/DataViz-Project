@@ -126,7 +126,7 @@ def normal(seq,zipcode,category,fromyear,toyear):
         line = ''
         if df is not None:
             # data = "https://raw.githubusercontent.com/lingyielia/TextDataAnalysis/master/casebytwo.csv"
-            line = vega(df)
+            line = c3data(df)
 
         return Response(line,
             mimetype='application/json',
@@ -151,7 +151,7 @@ def circle(radius,lat,lng,category,fromyear,toyear):
     print(df[:5])
     line = ''
     if df is not None:
-        line = vega(df)
+        line = c3data(df)
 
     return Response(line,
         mimetype='application/json',
