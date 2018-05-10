@@ -441,70 +441,142 @@ class DataSelectingForm extends React.Component {
 
   render() {
     return (
-        React.createElement("form", {onSubmit: this.handleSubmit},
-          React.createElement("label", null,
-            "   ",
+      React.createElement("table", {class: "table table-hover"},
+        React.createElement("thead", null,
+          React.createElement("tr", null,
             React.createElement("input", {type: "button",
-              value: "Reset to Default",
-              onClick: this.handleClick}
-            ),
-            "   " + ' ' +
-            "Category  ",
+                  value: "Reset",
+                  onClick: this.handleClick}
+                ),
+                "   ",
+                React.createElement("input", {type: "button",
+                    value: "Gentrifying",
+                    onClick: this.handleClick_ge}
+                  ),
+                  "   ",
+                  React.createElement("input", {type: "button",
+                    value: "Non-Gentrifying",
+                    onClick: this.handleClick_ng}
+                  ),
+                  "   ",
+                  React.createElement("input", {type: "button",
+                    value: "Higher-Income",
+                    onClick: this.handleClick_hi}
+                  ),
+          ),
+          React.createElement("tr", null,
             React.createElement("select", {
-              name: "category",
-              value: this.state.category,
-              onChange: this.handleChange},
-              React.createElement("option", {value: "all"}, ""),
-              React.createElement("option", {value: "'Air Quality'"}, "Air Quality"),
-              React.createElement("option", {value: "'New Tree Request'"}, "New Tree Request"),
-              React.createElement("option", {value: "'SAFETY'"}, "SAFETY"),
-              React.createElement("option", {value: "'Taxi Complaint'"}, "Taxi Complaint"),
-              React.createElement("option", {value: "'Traffic'"}, "Traffic")
-            ),
-            "   " + ' ' +
-            "From Year  ",
+                name: "fromyear",
+                value: this.state.fromyear,
+                onChange: this.handleChange},
+                React.createElement("option", {value: "all"}, "From Year"),
+                React.createElement("option", {value: "'2014'"}, "2014"),
+                React.createElement("option", {value: "'2015'"}, "2015"),
+                React.createElement("option", {value: "'2016'"}, "2016"),
+                React.createElement("option", {value: "'2017'"}, "2017"),
+                React.createElement("option", {value: "'2018'"}, "2018")
+              ),
             React.createElement("select", {
-              name: "fromyear",
-              value: this.state.fromyear,
-              onChange: this.handleChange},
-              React.createElement("option", {value: "all"}, ""),
-              React.createElement("option", {value: "'2014'"}, "2014"),
-              React.createElement("option", {value: "'2015'"}, "2015"),
-              React.createElement("option", {value: "'2016'"}, "2016"),
-              React.createElement("option", {value: "'2017'"}, "2017"),
-              React.createElement("option", {value: "'2018'"}, "2018")
-            ),
-            "   " + ' ' +
-            "To Year  ",
-            React.createElement("select", {
-              name: "toyear",
-              value: this.state.toyear,
-              onChange: this.handleChange},
-              React.createElement("option", {value: "all"}, ""),
-              React.createElement("option", {value: "'2014'"}, "2014"),
-              React.createElement("option", {value: "'2015'"}, "2015"),
-              React.createElement("option", {value: "'2016'"}, "2016"),
-              React.createElement("option", {value: "'2017'"}, "2017"),
-              React.createElement("option", {value: "'2018'"}, "2018")
-            ),
-            "   ",
-            React.createElement("input", {type: "button",
-              value: "Gentrifying",
-              onClick: this.handleClick_ge}
-            ),
-            "   ",
-            React.createElement("input", {type: "button",
-              value: "Non-Gentrifying",
-              onClick: this.handleClick_ng}
-            ),
-            "   ",
-            React.createElement("input", {type: "button",
-              value: "Higher-Income",
-              onClick: this.handleClick_hi}
-            ),
+                name: "toyear",
+                value: this.state.toyear,
+                onChange: this.handleChange},
+                React.createElement("option", {value: "all"}, "To Year"),
+                React.createElement("option", {value: "'2014'"}, "2014"),
+                React.createElement("option", {value: "'2015'"}, "2015"),
+                React.createElement("option", {value: "'2016'"}, "2016"),
+                React.createElement("option", {value: "'2017'"}, "2017"),
+                React.createElement("option", {value: "'2018'"}, "2018")
+              ),
+          ),
+          React.createElement("tr", null,
+            React.createElement("th", {scope: "col"}, "Feature"),
+            React.createElement("th", {scope: "col"}, "Now Choosing")
           )
+        ),
+        React.createElement("tbody", null,
+          React.createElement("tr", null,
+            React.createElement("th", {scope: "row"}, "Type"),
+            React.createElement("td", null,this.state.category)
+          ),
+          React.createElement("tr", null,
+            React.createElement("th", {scope: "row"}, "Time-From"),
+            React.createElement("td", null, this.state.fromyear)
+          ),
+          React.createElement("tr", null,
+            React.createElement("th", {scope: "row"}, "Time-Until"),
+            React.createElement("td", null, this.state.toyear)
+          ),
+      // React.createElement("tr", null,
+      //   React.createElement("th", {scope: "row"}, "Area"),
+      //   React.createElement("td", null, )
+      // )
       )
-    );
+    )
+        // React.createElement("form", {onSubmit: this.handleSubmit},
+        //   React.createElement("label", null,
+        //     "   ",
+        //     React.createElement("input", {type: "button",
+        //       value: "Reset to Default",
+        //       onClick: this.handleClick}
+        //     ),
+        //     "   " + ' ' +
+            // "Category  ",
+            // React.createElement("select", {
+            //   name: "category",
+            //   value: this.state.category,
+            //   onChange: this.handleChange},
+            //   React.createElement("option", {value: "all"}, ""),
+            //   React.createElement("option", {value: "'Air Quality'"}, "Air Quality"),
+            //   React.createElement("option", {value: "'New Tree Request'"}, "New Tree Request"),
+            //   React.createElement("option", {value: "'SAFETY'"}, "SAFETY"),
+            //   React.createElement("option", {value: "'Taxi Complaint'"}, "Taxi Complaint"),
+            //   React.createElement("option", {value: "'Traffic'"}, "Traffic")
+            // ),
+            // "   " + ' ' +
+          //   "From Year  ",
+          //   React.createElement("select", {
+          //     name: "fromyear",
+          //     value: this.state.fromyear,
+          //     onChange: this.handleChange},
+          //     React.createElement("option", {value: "all"}, "From Year"),
+          //     React.createElement("option", {value: "'2014'"}, "2014"),
+          //     React.createElement("option", {value: "'2015'"}, "2015"),
+          //     React.createElement("option", {value: "'2016'"}, "2016"),
+          //     React.createElement("option", {value: "'2017'"}, "2017"),
+          //     React.createElement("option", {value: "'2018'"}, "2018")
+          //   ),
+          //   "   " + ' ' +
+          //   "To Year  ",
+          //   React.createElement("select", {
+          //     name: "toyear",
+          //     value: this.state.toyear,
+          //     onChange: this.handleChange},
+          //     React.createElement("option", {value: "all"}, ""),
+          //     React.createElement("option", {value: "'2014'"}, "2014"),
+          //     React.createElement("option", {value: "'2015'"}, "2015"),
+          //     React.createElement("option", {value: "'2016'"}, "2016"),
+          //     React.createElement("option", {value: "'2017'"}, "2017"),
+          //     React.createElement("option", {value: "'2018'"}, "2018")
+          //   ),
+          //   "   ",React.createElement("br", null),
+          //   React.createElement("input", {type: "button",
+          //     value: "Gentrifying",
+          //     onClick: this.handleClick_ge}
+          //   ),
+          //   "   ",
+          //   React.createElement("input", {type: "button",
+          //     value: "Non-Gentrifying",
+          //     onClick: this.handleClick_ng}
+          //   ),
+          //   "   ",
+          //   React.createElement("input", {type: "button",
+          //     value: "Higher-Income",
+          //     onClick: this.handleClick_hi}
+          //   ),
+          //
+          // )
+      );
+    // );
   }
 }
 
@@ -512,5 +584,5 @@ ReactDOM.render(
   React.createElement("div", null,
     React.createElement(DataSelectingForm)
   ),
-  document.getElementById('ui')
+  document.getElementById('other')
 );
