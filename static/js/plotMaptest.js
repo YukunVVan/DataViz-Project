@@ -444,11 +444,7 @@ class DataSelectingForm extends React.Component {
       React.createElement("table", {class: "table table-hover"},
         React.createElement("thead", null,
           React.createElement("tr", null,
-            React.createElement("input", {type: "button",
-                  value: "Reset",
-                  onClick: this.handleClick}
-                ),
-                "   ",
+
                 React.createElement("input", {type: "button",
                     value: "Gentrifying",
                     onClick: this.handleClick_ge}
@@ -506,10 +502,16 @@ class DataSelectingForm extends React.Component {
             React.createElement("th", {scope: "row"}, "Time-Until"),
             React.createElement("td", null, this.state.toyear)
           ),
-      // React.createElement("tr", null,
-      //   React.createElement("th", {scope: "row"}, "Area"),
-      //   React.createElement("td", null, )
-      // )
+
+      React.createElement("tr", null,
+          React.createElement("th",null,
+            React.createElement("input", {type: "button",
+                  value: "Reset",
+                  onClick: this.handleClick}
+                ),
+          ),
+
+      )
       )
     )
         // React.createElement("form", {onSubmit: this.handleSubmit},
