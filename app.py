@@ -34,7 +34,7 @@ def getData(by,filter):
             for i in Gentrifying:
                 str_ge = str_ge + "incident_z = '" + str(i) + "' OR "
             str_ge = str_ge[:-4] + ")"
-            print(str_ge)
+            #print(str_ge)
             qfilter.append(str_ge)
             continue
         if f == "incident_z" and filter[f] == "gen_ng":
@@ -42,7 +42,7 @@ def getData(by,filter):
             for i in Non_Gentrifying:
                 str_ng = str_ng + "incident_z = '" + str(i) + "' OR "
             str_ng = str_ng[:-4] + ")"
-            print(str_ng)
+            #print(str_ng)
             qfilter.append(str_ng)
             continue
         if f == "incident_z" and filter[f] == "gen_hi":
@@ -50,7 +50,7 @@ def getData(by,filter):
             for i in Higher_Income:
                 str_hi = str_hi + "incident_z = '" + str(i) + "' OR "
             str_hi = str_hi[:-4] + ")"
-            print(str_hi)
+            #print(str_hi)
             qfilter.append(str_hi)
             continue
         qfilter.append(str(f)+' = '+str(filter[f]))
@@ -81,7 +81,7 @@ def normal(seq,zipcode,category,fromyear,toyear):
     # print(f)
     filter = {"incident_z":zipcode,"complaint_":category,"fromyear":fromyear,"toyear":toyear}
     if seq == '1':
-        if zipcode != 'gen1':
+        if zipcode != ('gen_ge' or 'gen_ng' or 'gen_hi'):
             filter["incident_z"] = "all"
         df = getData("incident_z",filter)
         # print(df)
