@@ -94,13 +94,15 @@ class DataSelectingForm extends React.Component {
                              return [(d[0]!==null?d[0]:x.domain()[0]),
                                      (d[1]!==null?d[1]:x.domain()[1])];
                            }));
+
+
         // console.log(boxes)
         boxes.enter().append("rect")
              .merge(boxes)
                .attr("height", 6)
                .attr("x", d => x(d[0]))
-               .attr("width", d => (x(d[1]) - x(d[0])))
-               .attr("fill", d => 'Purple');
+               .attr("width", d => (x(d[1]) - x(d[0])));
+               // .style("fill", function(d,i){return color(d[0]);});
 
                legend.call(d3.axisBottom(x)
                 .ticks(5, "s")
@@ -294,7 +296,8 @@ class DataSelectingForm extends React.Component {
            .attr("height", 6)
            .attr("x", d => x(d[0]))
            .attr("width", d => (x(d[1]) - x(d[0])))
-           .attr("fill", d => 'Purple');
+           .style("fill", function(d,i){return color(d[0]);});
+           // .attr("fill", d => 'Purple');
 
     legend.call(d3.axisBottom(x)
      .ticks(5, "s")
