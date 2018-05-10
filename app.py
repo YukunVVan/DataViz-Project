@@ -15,7 +15,7 @@ def getData(by,filter):
             qfilter.append("date > "+str(filter[f]))
             continue
         if f == "toyear":
-            qfilter.append("date < "+str(filter[f]))
+            qfilter.append("date < '"+str(int(filter[f].split("'")[1])+1)+"'")
             continue
         if f == "incident_z" and filter[f] == "gen_ge":
             str_ge = "("
