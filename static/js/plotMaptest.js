@@ -360,7 +360,45 @@ class DataSelectingForm extends React.Component {
     }
     else{
       var line = `/normal/2/${this.state.zipcode}/${this.state.category}/${this.state.fromyear}/${this.state.toyear}`;
-      vegaEmbed('#vis', line);
+      // vegaEmbed('#vis', line);
+      fetch(datatest)
+        .then(response => response.json())
+        .then(function (data, error) {
+          var chart = c3.generate({
+            bindto: '#chart',
+            data: {
+              x: 'x',
+              columns: [
+                data.date,
+                data["Air Quality"],
+                data['New Tree Request'],
+                data.SAFETY,
+                data['Taxi Complaint'],
+                data.Traffic
+              ],
+            },
+            axis: {
+              x: {
+                type: 'timeseries',
+                tick: {
+                  count: 5,
+                  format: '%Y-%m'
+                }
+              },
+              y: {
+                label: {
+                  text: 'Counts',
+                  position: 'outer-middle'
+                }
+              },
+            },
+            legend: {
+              item: {
+                onclick: function (id) { console.log(id); }
+              }
+            }
+          });
+      });
 
       var map = `/normal/1/${this.state.zipcode}/${this.state.category}/${this.state.fromyear}/${this.state.toyear}`;
       fetch(map)
