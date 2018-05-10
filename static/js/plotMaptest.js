@@ -31,6 +31,7 @@ class DataSelectingForm extends React.Component {
     this.componentDidMount = this.componentDidMount.bind(this);
     this.createMap = this.createMap.bind(this);
     this.updateMap = this.updateMap.bind(this);
+    this.lineplot = this.lineplot.bind(this);
     this.zoomToFeature = this.zoomToFeature.bind(this);
     this.setupSelectionHandlers = this.setupSelectionHandlers.bind(this);
     this.circleSelection = this.circleSelection.bind(this);
@@ -331,15 +332,68 @@ class DataSelectingForm extends React.Component {
     this.gmap = geojson;
 }
 
+  selectCat(cat){
+    console.log(cat);
+    this.setState({
+      category: "'"+cat+"'",
+    });
+  }
+
+  lineplot(data){
+    // console.log(data);
+    // console.log(data[0]);
+    var col = [
+      data.date,
+      data["Air Quality"],
+      data['New Tree Request'],
+      data.SAFETY,
+      data['Taxi Complaint'],
+      data.Traffic
+    ]
+    // console.log(col);
+    var chart = c3.generate({
+      bindto: '#vis',
+      data: {
+        x: 'x',
+        xFormat: '%Y-%m',
+        columns: col
+      },
+      axis: {
+        x: {
+          type: 'timeseries',
+          tick: {
+            count: 5,
+            format: '%Y-%m'
+          }
+        },
+        y: {
+          label: {
+            text: 'Counts',
+            position: 'outer-middle'
+          }
+        },
+      },
+      legend: {
+        item: {
+          onclick: id => this.selectCat(id)
+        }
+      }
+    });
+  }
+
   componentDidMount(event) {
     var line = `/normal/2/${this.state.zipcode}/${this.state.category}/${this.state.fromyear}/${this.state.toyear}`;
-    vegaEmbed('#vis', line);
+    // vegaEmbed('#vis', line);
+    fetch(line)
+      .then(response => response.json())
+      .then(r => this.lineplot(r));
 
     var map = `/normal/1/${this.state.zipcode}/${this.state.category}/${this.state.fromyear}/${this.state.toyear}`;
     fetch(map)
       .then( r => r.json())
       .then( r => {
         this.mapdata=r;
+        // d3.json(ZIPCODE_URL,this.createMap);
         d3.queue()
           .defer(d3.json, ZIPCODE_URL)
           .await(this.createMap);
@@ -355,50 +409,18 @@ class DataSelectingForm extends React.Component {
     if (this.circleUpdated) {
       console.log('update!')
       var line = `/circle/${this.state.radius}/${this.state.lat}/${this.state.lng}/${this.state.category}/${this.state.fromyear}/${this.state.toyear}`;
-      vegaEmbed('#vis', line);
+      // vegaEmbed('#vis', line);
+      fetch(line)
+        .then(response => response.json())
+        .then(r => this.lineplot(r));
       this.circleUpdated = false;
     }
     else{
       var line = `/normal/2/${this.state.zipcode}/${this.state.category}/${this.state.fromyear}/${this.state.toyear}`;
       // vegaEmbed('#vis', line);
-      fetch(datatest)
+      fetch(line)
         .then(response => response.json())
-        .then(function (data, error) {
-          var chart = c3.generate({
-            bindto: '#chart',
-            data: {
-              x: 'x',
-              columns: [
-                data.date,
-                data["Air Quality"],
-                data['New Tree Request'],
-                data.SAFETY,
-                data['Taxi Complaint'],
-                data.Traffic
-              ],
-            },
-            axis: {
-              x: {
-                type: 'timeseries',
-                tick: {
-                  count: 5,
-                  format: '%Y-%m'
-                }
-              },
-              y: {
-                label: {
-                  text: 'Counts',
-                  position: 'outer-middle'
-                }
-              },
-            },
-            legend: {
-              item: {
-                onclick: function (id) { console.log(id); }
-              }
-            }
-          });
-      });
+        .then(r => this.lineplot(r));
 
       var map = `/normal/1/${this.state.zipcode}/${this.state.category}/${this.state.fromyear}/${this.state.toyear}`;
       fetch(map)

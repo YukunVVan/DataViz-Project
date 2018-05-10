@@ -74,13 +74,17 @@ def c3data(df):
         dfonetype = data[data['type']==str(name)][['date','count']]
         dfonetype.columns = ['date', str(name)]
         dftemp = dftemp.merge(dfonetype, on='date', how='outer')
+    dftemp = dftemp.fillna(0)
 
     jsonstyle = {}
-    jsonstyle['date'] = ['x'] + df['date'].tolist()
-    for i in range(1,len(df.columns)):
-        jsonstyle[df.columns[i]] = [df.columns[i]] + df[df.columns[i]].tolist()
-
-    return json.dumps(jsonstyle)
+    jsonstyle['date'] = ['x'] + dftemp['date'].tolist()
+    for i in range(1,len(dftemp.columns)):
+        jsonstyle[dftemp.columns[i]] = [dftemp.columns[i]] + dftemp[dftemp.columns[i]].tolist()
+    # jsonstyle = []
+    # jsonstyle.append(['x'] + dftemp['date'].tolist())
+    # for i in range(1,len(dftemp.columns)):
+    #     jsonstyle.append([dftemp.columns[i]] + dftemp[dftemp.columns[i]].tolist())
+    return jsonstyle
 
 # def vega(df):
 #     data = pd.DataFrame(df,columns=['type','date','count'])
@@ -122,19 +126,22 @@ def normal(seq,zipcode,category,fromyear,toyear):
     if seq == '2':
         df = getData("complaint_, SUBSTRING(date, 1, 7)",filter)
         print(df[:5])
+        d = c3data(df)
+        print(d)
+        return jsonify(d)
         # print(df)
-        line = ''
-        if df is not None:
-            # data = "https://raw.githubusercontent.com/lingyielia/TextDataAnalysis/master/casebytwo.csv"
-            line = c3data(df)
-
-        return Response(line,
-            mimetype='application/json',
-            headers={
-                'Cache-Control': 'no-cache',
-                'Access-Control-Allow-Origin': '*'
-            }
-        )
+        # line = ''
+        # if df is not None:
+        #     # data = "https://raw.githubusercontent.com/lingyielia/TextDataAnalysis/master/casebytwo.csv"
+        #     line = c3data(df)
+        #
+        # return Response(line,
+        #     mimetype='application/json',
+        #     headers={
+        #         'Cache-Control': 'no-cache',
+        #         'Access-Control-Allow-Origin': '*'
+        #     }
+        # )
     # if seq == '3':
     #     df = getData("complaint_",filter)
     #     # print(df)
@@ -149,17 +156,18 @@ def circle(radius,lat,lng,category,fromyear,toyear):
     filter = {"geo":geo,"complaint_":category,"fromyear":fromyear,"toyear":toyear}
     df = getData("complaint_, SUBSTRING(date, 1, 7)",filter)
     print(df[:5])
-    line = ''
-    if df is not None:
-        line = c3data(df)
-
-    return Response(line,
-        mimetype='application/json',
-        headers={
-            'Cache-Control': 'no-cache',
-            'Access-Control-Allow-Origin': '*'
-        }
-    )
+    return c3data(df)
+    # line = ''
+    # if df is not None:
+    #     line = c3data(df)
+    #
+    # return Response(line,
+    #     mimetype='application/json',
+    #     headers={
+    #         'Cache-Control': 'no-cache',
+    #         'Access-Control-Allow-Origin': '*'
+    #     }
+    # )
 # def line(zipcode,category,fromyear,toyear):
 
 if __name__ == '__main__':
