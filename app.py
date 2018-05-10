@@ -66,30 +66,46 @@ def getData(by,filter):
 def index():
     return render_template('index.html')
 
-def vega(df):
+def c3data(df):
     data = pd.DataFrame(df,columns=['type','date','count'])
 
-    highlight = alt.selection(type='single', on='mouseover',
-                  fields=['type'], nearest=True)
+    dftemp = pd.DataFrame(columns=['date'])
+    for name in data['type'].unique():
+        dfonetype = data[data['type']==str(name)][['date','count']]
+        dfonetype.columns = ['date', str(name)]
+        dftemp = dftemp.merge(dfonetype, on='date', how='outer')
 
-    base = alt.Chart(data).encode(
-        x='date:T',
-        y='count:Q',
-        color='type:N'
-    )
+    jsonstyle = {}
+    jsonstyle['date'] = ['x'] + df['date'].tolist()
+    for i in range(1,len(df.columns)):
+        jsonstyle[df.columns[i]] = [df.columns[i]] + df[df.columns[i]].tolist()
 
-    points = base.mark_circle().encode(
-        opacity=alt.value(0)
-    ).properties(
-        selection=highlight,
-        width=400
-    )
+    return json.dumps(jsonstyle)
 
-    lines = base.mark_line().encode(
-        size=alt.condition(~highlight, alt.value(1), alt.value(3))
-    )
-
-    return (points+lines).to_json()
+# def vega(df):
+#     data = pd.DataFrame(df,columns=['type','date','count'])
+#
+#     highlight = alt.selection(type='single', on='mouseover',
+#                   fields=['type'], nearest=True)
+#
+#     base = alt.Chart(data).encode(
+#         x='date:T',
+#         y='count:Q',
+#         color='type:N'
+#     )
+#
+#     points = base.mark_circle().encode(
+#         opacity=alt.value(0)
+#     ).properties(
+#         selection=highlight,
+#         width=400
+#     )
+#
+#     lines = base.mark_line().encode(
+#         size=alt.condition(~highlight, alt.value(1), alt.value(3))
+#     )
+#
+#     return (points+lines).to_json()
 
 
 @app.route('/normal/<seq>/<zipcode>/<category>/<fromyear>/<toyear>',methods=['GET', 'POST'])
