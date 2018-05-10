@@ -81,7 +81,7 @@ def normal(seq,zipcode,category,fromyear,toyear):
     # print(f)
     filter = {"incident_z":zipcode,"complaint_":category,"fromyear":fromyear,"toyear":toyear}
     if seq == '1':
-        if zipcode != ('gen_ge' or 'gen_ng' or 'gen_hi'):
+        if zipcode not in set(['gen_ge','gen_ng','gen_hi']):
             filter["incident_z"] = "all"
         df = getData("incident_z",filter)
         # print(df)

@@ -149,6 +149,7 @@ class DataSelectingForm extends React.Component {
     var map = L.map('map').setView([40.7, -73.975], 4);
     this.originmap = map;
     L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png', { minZoom: 10 }).addTo(map);
+    // L.circle([40.692908,-73.9896452], 1000, options={editable: true}).addTo(map);
     var geojson = L.geoJson(zip, {style: style, onEachFeature: onEachFeature}).addTo(map);
     geojson.eachLayer(function (layer) {
       // var c = color(countbyzip[layer.feature.properties.zipcode])
