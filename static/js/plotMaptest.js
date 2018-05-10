@@ -102,6 +102,13 @@ class DataSelectingForm extends React.Component {
                .attr("width", d => (x(d[1]) - x(d[0])))
                .attr("fill", d => 'Purple');
 
+               legend.call(d3.axisBottom(x)
+                .ticks(5, "s")
+                .tickSize(10,0)
+                .tickValues(color.domain()))
+               .select(".domain")
+                .remove();
+
     count.forEach(function (d) {
       countbyzip[d[0]] = +d[1];
     });
@@ -163,8 +170,6 @@ class DataSelectingForm extends React.Component {
     dMap.on(L.Draw.Event.EDITRESIZE, updateQueryStatus);
     dMap.on('mouseup', updateQuery);
 
-    // let circleUpdated = true;
-    // this.updateQueryStatus(null);
     let radius  = L.GeometryUtil.readableDistance(circle.getRadius(), true),
         lat     = circle.getLatLng().lat.toFixed(4),
         lng     = circle.getLatLng().lng.toFixed(4),
@@ -173,21 +178,6 @@ class DataSelectingForm extends React.Component {
                    <tr><th>Radius</th><td>${radius}</td></tr>
                    </table>`;
     infoBox.html(caption);
-    // function updateQueryStatus(e) {
-    //   this.circleUpdated = true;
-    //   updateCaption();
-    // }
-
-    // function updateCaption() {
-    //   let radius  = L.GeometryUtil.readableDistance(circle.getRadius(), true),
-    //       lat     = circle.getLatLng().lat.toFixed(4),
-    //       lng     = circle.getLatLng().lng.toFixed(4),
-    //       caption = `<table style='width:100%'>
-    //                  <tr><th>Coords</th><td>${lat},${lng}</td></tr>
-    //                  <tr><th>Radius</th><td>${radius}</td></tr>
-    //                  </table>`;
-    //   infoBox.html(caption);
-    // }
   }
 
   createMap(error,zip){
