@@ -1,11 +1,8 @@
 from flask import Flask, Response, render_template, request, url_for, flash, jsonify
 from setting import host, database, user, password, Gentrifying, Non_Gentrifying, Higher_Income, cur
-# import altair as alt
 import pandas as pd
-import altair as alt
 import json
-# from flask import Flask, request, session, g, redirect, url_for, abort, \
-#      render_template, flash
+
 app = Flask(__name__)
 
 def getData(by,filter):
