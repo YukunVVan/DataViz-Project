@@ -3,8 +3,6 @@
 
 __by Y. Wan, L. Zhang, E.Hansen__
 
-			for Data Visualization, NYU CUSP, Spring 2018
-
 
 
 # I. Introduction
