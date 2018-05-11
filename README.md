@@ -1,9 +1,10 @@
 # Exploring 311 Complaints through the Lens of Gentrification in New York City
+`Python` `Flask` `ReactJS` `LeafLet` `C3.JS` `D3.JS` `PostgreSQL` `AWS` `Heroku`
 __by Y. Wan, L. Zhang, E.Hansen__
 
 			for Data Visualization, NYU CUSP, Spring 2018
 
-`Python` `Flask` `ReactJS` `LeafLet` `C3.JS` `D3.JS` `PostgreSQL` `AWS` `Heroku`
+
 
 # I. Introduction
 While gentrification is not an especially new phenomenon, the concept has taken over many of the residential areas of New York City. A report in 2016 by New York University’s Furman Center for Real Estate and Urban Policy reveals the widespread effects of gentrification across the Big Apple. Since 1990, nearly 30% of New York Cities have begun to gentrify, defined as the shift in low-income neighborhoods that experienced an increase in average rent prices above the median value by 2010-2014. Only a handful  of neighborhoods - just seven - are considered to not be gentrifying, while the remaining neighborhoods out of the 55 considered in the study are labeled as “high income” and thus already gentrified [1][2].
@@ -39,7 +40,7 @@ More under-the-hood, gentrification-associated clustering of neighborhoods can b
 
  ![Alt text](figure/Figure1.png)
  <br>
-  Figure 1: Flow chart of front- and back-end development pipeline<p>
+  __Figure 1__: Flow chart of front- and back-end development pipeline<p>
 
 <p>
 The process of deploying a web-based interactive visualization is accomplished through the utilization of a combination of Flask, react.js, Leaflet, c3.js, and D3.js (responsible for handling the GeoJSON zip code file). The technical details of the visualization can be generalized into three main steps visualized in Figure 1:
@@ -66,27 +67,27 @@ To start, this development-focused client is looking at what it might be able to
 <p>
 
 ![Alt text](figure/Figure2.png) <br>
-  Figure 2: Collection of  “Gentrifying” neighborhoods and associated 311 call trends
+  __Figure 2__: Collection of  “Gentrifying” neighborhoods and associated 311 call trends
 <p>
 Notably, we see a very obvious seasonal and decreasing trend in New Tree Requests for this region. While there are perhaps modest increasing or decreasing trends in the other categories, there is not a distinct trend overall to categorize all gentrifying zip codes regarding them. This, however, allows the visualization to truly shine: it is possible to geographically isolate regions of gentrification to observe if there are more local community-specific priorities that are not revealed by simply calling an area “gentrified.” To illustrate, let us observe the trends between gentrified communities across different parts of Manhattan and Brooklyn.
 <p>
 
 ![Alt text](figure/Figure3.png)<br>
-  Figure 3: Western Brooklyn  “Gentrifying” neighborhoods and associated 311 call trends
+  __Figure 3__: Western Brooklyn  “Gentrifying” neighborhoods and associated 311 call trends
 <p>
 In Western Brooklyn, the initial demand for new tree plantings on city streets by the Parks Department is even more pronounced (Figure 3). As the demand for new tree plantings decreases over time, we notice that complaints about traffic see a sizeable increase in this region - perhaps neighborhood aesthetic renovation has drawn many people to the area, but now there are too many cars. Our client could then decide to look into street parking allocation and parking garage information for this area. Our client may also look to an increasing trend in traffic complaints to see whether it is predictive of population or rent stabilization.
 <p>
 
 ![Alt text](figure/Figure4.png) <br>
 
-  Figure 4: Northern Manhattan “Gentrifying” neighborhoods and associated 311 call trends
+  __Figure 4__: Northern Manhattan “Gentrifying” neighborhoods and associated 311 call trends
 <p>
 In Northern Manhattan (Figure 4), we see a much different picture. First, tree requests follow no decreasing trend; in fact, there is still ample demand for trees in this region, apparently, indicating that perhaps this region is still in the early stages of gentrification. Here, however, safety is the community’s greatest priority as far as they regard 311 service calls.
 <p>
 
  ![Alt text](figure/Figure5.png) <br>
 
-  Figure 5: Lower Manhattan “Gentrifying” neighborhoods and associated 311 call trends
+  __Figure 5__: Lower Manhattan “Gentrifying” neighborhoods and associated 311 call trends
 <p>
 In Lower Manhattan (Figure 5), we see relative abundances in 311 calls concerning air quality and taxi complaints. Being lower Manhattan, this is perhaps not so surprising, but we notably see an increase in requests in both traffic and in safety, the latter much more so in the most recent 6-12 months.
 <p>
