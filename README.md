@@ -1,5 +1,6 @@
 # Exploring 311 Complaints through the Lens of Gentrification in New York City
 `Python` `Flask` `ReactJS` `LeafLet` `C3.JS` `D3.JS` `PostgreSQL` `AWS` `Heroku`
+
 __by Y. Wan, L. Zhang, E.Hansen__
 
 			for Data Visualization, NYU CUSP, Spring 2018
