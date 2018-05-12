@@ -346,6 +346,9 @@ class DataSelectingForm extends React.Component {
     // console.log(col);
     var chart = c3.generate({
       bindto: '#vis',
+      title:{
+        text: 'Complaint Trend of Each Type'
+      },
       data: {
         x: 'x',
         xFormat: '%Y-%m',
